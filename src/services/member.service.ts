@@ -74,13 +74,52 @@ export class MemberNotFoundError extends Error {
   }
 }
 
+export interface GetMembersQuery {
+  name?: string;
+  email?: string;
+  managerEmail?: string;
+  employeeEmail?: string;
+}
+
+export function getMembers(query: GetMembersQuery): Member[] {
+  const result = filter((m) => {
+    let expression = true;
+
+    if (query.name) {
+      expression = expression && m.name.toLowerCase().includes(query.name.toLowerCase());
+    }
+
+    if (query.email) {
+      expression = expression && m.email.toLowerCase().includes(query.email.toLowerCase());
+    }
+
+    if (query.managerEmail) {
+      expression =
+        expression && m.manager
+          ? m.manager.email.toLowerCase().includes(query.managerEmail.toLowerCase())
+          : false;
+    }
+
+    if (query.employeeEmail) {
+      expression =
+        expression &&
+        m.filterEmployees((e) => e.email.toLowerCase().includes(query.employeeEmail!.toLowerCase()))
+          .length > 0;
+    }
+
+    return expression;
+  });
+
+  return result;
+}
+
 /**
  * Finds the first member where the predicate is true.
  * Iterative Depth-First Search using stack.
  * @param f Predicate, to be applied on every member.
  * @returns The first member that evaluates the predicate to true. Otherwise - undefined.
  */
-export function find(f: (member: Member) => boolean): Member | undefined {
+function find(f: (member: Member) => boolean): Member | undefined {
   // start the search from the root
   const stack = [root];
 
@@ -106,7 +145,7 @@ export function find(f: (member: Member) => boolean): Member | undefined {
  * @param f Predicate, to be applied on every member.
  * @returns An array of members.
  */
-export function filter(f: (member: Member) => boolean): Member[] {
+function filter(f: (member: Member) => boolean): Member[] {
   const result: Member[] = [];
 
   // start the search from the root

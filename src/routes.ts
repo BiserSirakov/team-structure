@@ -8,6 +8,7 @@ import {
   updateMemberHandler,
   deleteMemberHandler,
   getMembersHandler,
+  getRootHandler,
 } from './controllers/members.controller';
 
 export default function routes(app: Express) {
@@ -26,8 +27,13 @@ export default function routes(app: Express) {
    */
   app.delete('/api/members/:memberId', deleteMemberHandler);
 
-  // Not part of the assignment, used as a helper to display the current team structure. (outputs the root)
+  /**
+   * Get members (as an array) for a given set of filters.
+   */
   app.get('/api/members', getMembersHandler);
+
+  // Not part of the assignment, used as a helper to display the current team structure. (outputs the root)
+  app.get('/api/root', getRootHandler);
 
   // Custom error handler (should be registered at the end)
   app.use(errorHandler);

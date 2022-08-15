@@ -1,6 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { createMember, deleteMember, getRoot, updateManager } from '../services/member.service';
+import {
+  createMember,
+  deleteMember,
+  getMembers,
+  GetMembersQuery,
+  getRoot,
+  updateManager,
+} from '../services/member.service';
 import { mapMemberToOutput } from '../services/member.mapper.service';
 
 export function createMemberHandler(req: Request, res: Response, next: NextFunction) {
@@ -12,13 +19,21 @@ export function createMemberHandler(req: Request, res: Response, next: NextFunct
   }
 }
 
-export function getMembersHandler(req: Request, res: Response) {
+export function getRootHandler(req: Request, res: Response) {
   const root = getRoot();
   if (!root) {
     return res.status(404).send({ error: 'There are no members in the current team structure.' });
   }
 
   return res.json(mapMemberToOutput(root));
+}
+
+export function getMembersHandler(
+  req: Request<unknown, unknown, unknown, GetMembersQuery>,
+  res: Response
+) {
+  const members = getMembers(req.query);
+  return res.json(members.map((m) => mapMemberToOutput(m)));
 }
 
 export function updateMemberHandler(req: Request, res: Response, next: NextFunction) {

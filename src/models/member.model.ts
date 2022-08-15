@@ -49,6 +49,23 @@ export class Member {
   }
 
   /**
+   * Filters the member's employees where the predicate is true.
+   * @param f Predicate, to be applied on every employee.
+   * @returns An array of employees.
+   */
+  filterEmployees(f: (employee: Member) => boolean): Member[] {
+    const result: Member[] = [];
+
+    for (const employee of this.employees) {
+      if (f(employee)) {
+        result.push(employee);
+      }
+    }
+
+    return result;
+  }
+
+  /**
    * Updates the member's manager. Also, removes the current member from his old manager's employees.
    * @param newManager New manager
    */
