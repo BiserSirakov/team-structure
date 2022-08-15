@@ -103,7 +103,7 @@ describe('POST /members', () => {
   });
 });
 
-async function createMember(name?: string, email?: string, managerId?: string) {
+export async function createMember(name?: string, email?: string, managerId?: string) {
   const input: any = {};
   if (name) input.name = name;
   if (email) input.email = email;
