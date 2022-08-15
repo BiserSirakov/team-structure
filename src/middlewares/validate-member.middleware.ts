@@ -23,7 +23,9 @@ export default function validateMember(req: Request, res: Response, next: NextFu
 
   // check if there is already a member with this email
   if (isEmailUsed(req.body.email)) {
-    return res.status(400).send(`There is already a member with email '${req.body.email}'!`);
+    return res
+      .status(400)
+      .send({ error: `There is already a member with email '${req.body.email}'!` });
   }
 
   return next();

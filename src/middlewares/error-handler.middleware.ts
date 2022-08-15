@@ -10,7 +10,7 @@ import { MemberNotFoundError } from '../services/member.service';
  */
 export default function errorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
   if (err instanceof MemberNotFoundError) {
-    return res.status(404).send(err.message);
+    return res.status(404).send({ error: err.message });
   } else {
     console.error(err);
     return res.status(500).send(`Unexpected error: '${err.message}'`);

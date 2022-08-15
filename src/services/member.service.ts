@@ -59,17 +59,8 @@ export function deleteMember(memberId: string): void {
   emails.delete(member.email);
 }
 
-//#region getMember (private)
-
-export class MemberNotFoundError extends Error {
-  constructor(memberId: string) {
-    super(`No member found with id '${memberId}'!`);
-  }
-}
-
 function getMember(memberId: string): Member {
-  // start the traversal from the root
-  const member = dfs(root, memberId);
+  const member = find((m) => m.id === memberId);
   if (!member) {
     throw new MemberNotFoundError(memberId);
   }
@@ -77,26 +68,65 @@ function getMember(memberId: string): Member {
   return member;
 }
 
-/**
- * Preorder Depth–first search (recursive) by member's id
- * @param member currently visited member
- */
-function dfs(member: Member, id: string): Member | null {
-  console.log('dfs -> ', member.email);
-
-  if (member.id === id) {
-    return member;
+export class MemberNotFoundError extends Error {
+  constructor(memberId: string) {
+    super(`No member found with id '${memberId}'!`);
   }
-
-  for (const employee of member.employees) {
-    const res = dfs(employee, id);
-    if (res) {
-      return res;
-    }
-  }
-
-  // no member found
-  return null;
 }
 
-//#endregion
+const nums: Number[] = [];
+nums.find;
+
+/**
+ * Finds the first member where the predicate is true.
+ * Iterative Depth-First Search using stack.
+ * @param f Predicate, to be applied on every member.
+ * @returns The first member that evaluates the predicate to true. Otherwise - undefined.
+ */
+export function find(f: (member: Member) => boolean): Member | undefined {
+  // start the search from the root
+  const stack = [root];
+
+  while (stack.length) {
+    const current = stack.pop();
+    if (!current) break; // ts
+
+    if (f(current)) {
+      return current;
+    }
+
+    current.employees.forEach((employee) => {
+      stack.push(employee);
+    });
+  }
+
+  return undefined;
+}
+
+/**
+ * Filters the members where the predicate is true.
+ * Iterative Depth-First Search using stack.
+ * @param f Predicate, to be applied on every member.
+ * @returns An array of members.
+ */
+export function filter(f: (member: Member) => boolean): Member[] {
+  const result: Member[] = [];
+
+  // start the search from the root
+  const stack = [root];
+
+  while (stack.length) {
+    const current = stack.pop();
+    if (!current) break; // ts
+
+    if (f(current)) {
+      result.push(current);
+    }
+
+    current.employees.forEach((employee) => {
+      stack.push(employee);
+    });
+  }
+
+  return result;
+}

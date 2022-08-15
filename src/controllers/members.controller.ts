@@ -15,7 +15,7 @@ export function createMemberHandler(req: Request, res: Response, next: NextFunct
 export function getMembersHandler(req: Request, res: Response) {
   const root = getRoot();
   if (!root) {
-    return res.status(404).send('There are no members in the current team structure.');
+    return res.status(404).send({ error: 'There are no members in the current team structure.' });
   }
 
   return res.json(mapMemberToOutput(root));
