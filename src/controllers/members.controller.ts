@@ -5,7 +5,6 @@ import {
   deleteMember,
   getMembers,
   GetMembersQuery,
-  getRoot,
   updateManager,
 } from '../services/member.service';
 import { mapMemberToOutput } from '../services/member.mapper.service';
@@ -17,15 +16,6 @@ export function createMemberHandler(req: Request, res: Response, next: NextFunct
   } catch (error) {
     next(error);
   }
-}
-
-export function getRootHandler(req: Request, res: Response) {
-  const root = getRoot();
-  if (!root) {
-    return res.status(404).send({ error: 'There are no members in the current team structure.' });
-  }
-
-  return res.json(mapMemberToOutput(root));
 }
 
 export function getMembersHandler(
