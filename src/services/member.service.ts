@@ -41,7 +41,25 @@ export function isEmailUsed(email: string): boolean {
   return emails.has(email);
 }
 
-//#region getMember
+export function getRoot(): Member | undefined {
+  return root;
+}
+
+export function updateManager(memberId: string, managerId: string): Member {
+  const member = getMember(memberId);
+  const newManager = getMember(managerId);
+  member.updateManager(newManager);
+
+  return member;
+}
+
+export function deleteMember(memberId: string): void {
+  const member = getMember(memberId);
+  member.delete();
+  emails.delete(member.email);
+}
+
+//#region getMember (private)
 
 export class MemberNotFoundError extends Error {
   constructor(memberId: string) {

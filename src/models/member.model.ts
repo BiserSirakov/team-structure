@@ -60,6 +60,6 @@ export class Member {
       employee.updateManager(this._manager!);
     });
 
-    this._manager = undefined; // TODO: Check the garbage collector in NodeJS (if the employeeToRemove deleted)
+    this._manager = undefined; // TODO: Check the garbage collector in NodeJS (if the current object gets deleted)
   }
 }
