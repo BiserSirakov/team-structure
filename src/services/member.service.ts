@@ -59,7 +59,7 @@ export function deleteMember(memberId: string): void {
   emails.delete(member.email);
 }
 
-function getMember(memberId: string): Member {
+export function getMember(memberId: string): Member {
   const member = find((m) => m.id === memberId);
   if (!member) {
     throw new MemberNotFoundError(memberId);
@@ -73,9 +73,6 @@ export class MemberNotFoundError extends Error {
     super(`No member found with id '${memberId}'!`);
   }
 }
-
-const nums: Number[] = [];
-nums.find;
 
 /**
  * Finds the first member where the predicate is true.

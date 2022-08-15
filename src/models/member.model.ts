@@ -25,6 +25,13 @@ export class Member {
   }
 
   /**
+   * Gets the member's manager.
+   */
+  get manager(): Member | undefined {
+    return this._manager;
+  }
+
+  /**
    * Adds the new employee to the current member's employees.
    * @param employee New employee
    */
@@ -46,7 +53,7 @@ export class Member {
    * @param newManager New manager
    */
   updateManager(newManager: Member): void {
-    this._manager?.removeEmployee(this);
+    this.manager?.removeEmployee(this);
     newManager.addEmployee(this);
   }
 
@@ -54,10 +61,10 @@ export class Member {
    * Deletes the current memeber. If the member has employees, they are transferred to the member's manager.
    */
   delete(): void {
-    this._manager?.removeEmployee(this);
+    this.manager?.removeEmployee(this);
 
     this.employees.forEach((employee) => {
-      employee.updateManager(this._manager!);
+      employee.updateManager(this.manager!);
     });
 
     this._manager = undefined; // TODO: Check the garbage collector in NodeJS (if the current object gets deleted)
