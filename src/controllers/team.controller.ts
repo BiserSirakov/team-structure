@@ -5,18 +5,23 @@ import {
   mapOutputToMember,
   IncorrectTeamStructureError,
 } from '../services/member.mapper.service';
-import { setRoot } from '../services/member.service';
+import { setRoot, checkEmails } from '../services/member.service';
 
 export function importTeamHandler(req: Request, res: Response, next: NextFunction) {
   const bufStr = req.file?.buffer?.toString();
   if (!bufStr) {
-    return res.status(400).json({ error: 'The file is empty!' }); // TODO:
+    return res.status(400).json({ error: 'The file is empty!' });
   }
 
   try {
     const imported: MemberOutput = JSON.parse(bufStr);
 
     const importedRoot = mapOutputToMember(imported);
+
+    if (!checkEmails(importedRoot)) {
+      throw new IncorrectTeamStructureError({ email: ['There are duplicate emails.'] });
+    }
+
     setRoot(importedRoot);
 
     return res.json(mapMemberToOutput(importedRoot));

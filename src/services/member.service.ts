@@ -50,6 +50,34 @@ export function setRoot(newRoot: Member): void {
   // TODO: check if the old object is disposed?
 }
 
+/**
+ * (Dirty solution) // TODO:
+ * Checks for duplicate emails in the given team structure
+ * @param member the member where the search is started from
+ */
+export function checkEmails(member: Member): boolean {
+  const emails = new Set<string>();
+
+  const stack = [member];
+
+  while (stack.length) {
+    const current = stack.pop();
+    if (!current) break; // ts
+
+    if (emails.has(current.email)) {
+      return false;
+    }
+
+    emails.add(current.email);
+
+    current.employees.forEach((employee) => {
+      stack.push(employee);
+    });
+  }
+
+  return true;
+}
+
 export function updateManager(memberId: string, managerId: string): Member {
   const member = getMember(memberId);
   const newManager = getMember(managerId);
