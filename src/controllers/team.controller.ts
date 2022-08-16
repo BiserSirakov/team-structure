@@ -5,9 +5,9 @@ import {
   mapOutputToMember,
   IncorrectTeamStructureError,
 } from '../services/member.mapper.service';
-import { setRoot, checkEmails } from '../services/member.service';
+import { setRoot, checkEmails, getRoot } from '../services/member.service';
 
-export function importTeamHandler(req: Request, res: Response, next: NextFunction) {
+export function importTeamHandler(req: Request, res: Response) {
   const bufStr = req.file?.buffer?.toString();
   if (!bufStr) {
     return res.status(400).json({ error: 'The file is empty!' });
@@ -37,4 +37,11 @@ export function importTeamHandler(req: Request, res: Response, next: NextFunctio
   }
 }
 
-export function exportTeamHandler(req: Request, res: Response, next: NextFunction) {}
+export function exportTeamHandler(req: Request, res: Response) {
+  const root = getRoot();
+  const output = root ? mapMemberToOutput(root) : {};
+
+  return res
+    .setHeader('Content-disposition', 'attachment; filename=team-structure.json')
+    .json(output);
+}
