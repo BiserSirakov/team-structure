@@ -5,6 +5,12 @@ import { getMember } from '../../src/services/member.service';
 import { createMember } from './create.member.test';
 
 describe('DELETE /members', () => {
+  it('should successfully delete the root', async () => {
+    const res1 = await createMember('Pay Root', 'pay.root@payhawk.com');
+    const res = await request(app).delete(`/api/members/${res1.body.id}`);
+    expect(res.statusCode).toEqual(204);
+  });
+
   /**
    * Delete Two. The employees are now transfered to One. (its manager)
    *
