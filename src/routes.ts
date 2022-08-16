@@ -1,6 +1,6 @@
 import { Express } from 'express';
 
-import validateMember from './middlewares/validate-member.middleware';
+import validateMember from './middlewares/member-validator.middleware';
 import errorHandler from './middlewares/error-handler.middleware';
 import {
   createMemberHandler,
