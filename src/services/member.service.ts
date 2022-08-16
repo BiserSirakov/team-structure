@@ -45,6 +45,11 @@ export function getRoot(): Member | undefined {
   return root;
 }
 
+export function setRoot(newRoot: Member): void {
+  root = newRoot;
+  // TODO: check if the old object is disposed?
+}
+
 export function updateManager(memberId: string, managerId: string): Member {
   const member = getMember(memberId);
   const newManager = getMember(managerId);

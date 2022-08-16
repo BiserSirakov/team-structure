@@ -23,3 +23,17 @@ export function mapMemberToOutput(member: Member): MemberOutput {
 
   return output;
 }
+
+/**
+ * Maps the Member output model to a Member model. (also, recursively maps the employees)
+ * @param output Member output model
+ * @returns Member model
+ */
+export function mapOutputToMember(output: MemberOutput): Member {
+  const member = new Member(output.name, output.email);
+  output.employees?.forEach((employee) => {
+    member.addEmployee(mapOutputToMember(employee));
+  });
+
+  return member;
+}
