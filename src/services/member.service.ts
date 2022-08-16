@@ -5,7 +5,7 @@ import { Member } from '../models/member.model';
 /**
  * The top manager. (the root of the tree)
  */
-let root: Member;
+let root: Member | null;
 
 /**
  * Used to keep track of the emails in the team structure.
@@ -41,7 +41,7 @@ export function isEmailUsed(email: string): boolean {
   return emails.has(email);
 }
 
-export function getRoot(): Member | undefined {
+export function getRoot(): Member | null {
   return root;
 }
 
@@ -62,6 +62,11 @@ export function deleteMember(memberId: string): void {
   const member = getMember(memberId);
   member.delete();
   emails.delete(member.email);
+
+  // if the root gets deleted, set it to null
+  if (root === member) {
+    root = null;
+  }
 }
 
 export function getMember(memberId: string): Member {

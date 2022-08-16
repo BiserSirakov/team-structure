@@ -70,9 +70,9 @@ export class Member {
    * Updates the member's manager. Also, removes the current member from his old manager's employees.
    * @param newManager New manager
    */
-  updateManager(newManager: Member): void {
+  updateManager(newManager?: Member): void {
     this.manager?.removeEmployee(this);
-    newManager.addEmployee(this);
+    newManager?.addEmployee(this);
   }
 
   /**
@@ -82,7 +82,7 @@ export class Member {
     this.manager?.removeEmployee(this);
 
     this.employees.forEach((employee) => {
-      employee.updateManager(this.manager!);
+      employee.updateManager(this.manager);
     });
 
     this._manager = undefined; // TODO: Check the garbage collector in NodeJS (if the current object gets deleted)
