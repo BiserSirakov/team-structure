@@ -1,25 +1,35 @@
 import { Request, Response, NextFunction, json } from 'express';
 import { MemberOutput } from '../models/member.output.model';
-import { mapOutputToMember, mapMemberToOutput } from '../services/member.mapper.service';
+import {
+  mapMemberToOutput,
+  mapOutputToMember,
+  IncorrectTeamStructureError,
+} from '../services/member.mapper.service';
 import { setRoot } from '../services/member.service';
 
 export function importTeamHandler(req: Request, res: Response, next: NextFunction) {
-  const buf = req.file?.buffer;
-  if (!buf) {
-    return res.status(400).json({ error: '' });
+  const bufStr = req.file?.buffer?.toString();
+  if (!bufStr) {
+    return res.status(400).json({ error: 'The file is empty!' }); // TODO:
   }
 
-  const input: MemberOutput = JSON.parse(buf.toString());
+  try {
+    const imported: MemberOutput = JSON.parse(bufStr);
 
-  // TODO: validate input
+    const importedRoot = mapOutputToMember(imported);
+    setRoot(importedRoot);
 
-  // map to a member (the new root)
-  const importedRoot = mapOutputToMember(input);
-
-  // set as a new root
-  setRoot(importedRoot);
-
-  return res.json(mapMemberToOutput(importedRoot));
+    return res.json(mapMemberToOutput(importedRoot));
+  } catch (error) {
+    if (error instanceof IncorrectTeamStructureError) {
+      return res.status(400).json({ messagee: error.message, errors: error.errors });
+    } else if (error instanceof SyntaxError) {
+      return res.status(400).json({ error: 'Invalid JSON!' });
+    } else {
+      console.error(error);
+      return res.status(500).send(`Unexpected error: '${error}'`);
+    }
+  }
 }
 
 export function exportTeamHandler(req: Request, res: Response, next: NextFunction) {}
