@@ -4,17 +4,17 @@ import { getMember } from '../../src/services/member.service';
 
 import { createMember } from './create.member.test';
 
-describe('PUT /members', () => {
+describe('PUT /api/members', () => {
   /**
    * Update Two' manager to be Three.
    *
-   *       1             1
-   *      / \             \
-   *     2   3   =>        3
-   *    / \                 \
-   *   4   5                 2
-   *                        / \
-   *                       4   5
+   *       1           1
+   *      / \           \
+   *     2   3   =>      3
+   *    / \               \
+   *   4   5               2
+   *                      / \
+   *                     4   5
    */
   it("should successfully update a member's manager", async () => {
     const res1 = await createMember('Hawk One', 'hawk.1@payhawk.com');

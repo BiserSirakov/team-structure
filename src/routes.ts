@@ -10,9 +10,7 @@ import {
 } from './controllers/members.controller';
 import { exportTeamHandler, importTeamHandler } from './controllers/team.controller';
 
-import multer from 'multer';
-const upload = multer({ limits: { fileSize: 1 * 1024 * 1024 } }); // limit file size to 1MB
-// TODO: add filter for JSON files only?
+import fileUpload from "./middlewares/file-upload.middleware";
 
 export default function routes(app: Express) {
   /**
@@ -38,7 +36,7 @@ export default function routes(app: Express) {
   /**
    * Import a team (upload a json file)
    */
-  app.post('/api/team', upload.single('team'), importTeamHandler);
+  app.post('/api/team', fileUpload.single('team'), importTeamHandler);
 
   /**
    * Gets a team (exports a json file)

@@ -2,7 +2,7 @@ import request from 'supertest';
 import app from '../../src/app';
 import { getMember, getRoot } from '../../src/services/member.service';
 
-describe('POST /members', () => {
+describe('POST /api/members', () => {
   it('should successfully create a new top manager', async () => {
     let root = getRoot();
     expect(root).toBeUndefined();

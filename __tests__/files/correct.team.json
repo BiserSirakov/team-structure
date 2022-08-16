@@ -1,0 +1,44 @@
+{
+  "name": "Mr. Hawk",
+  "email": "mr.hawk@payhawk.com",
+  "employees": [
+    {
+      "name": "Hawk One",
+      "email": "hawk.1@payhawk.com",
+      "employees": [
+        {
+          "name": "Hawk Three",
+          "email": "hawk.3@payhawk.com"
+        },
+        {
+          "name": "Hawk Four",
+          "email": "hawk.4@payhawk.com",
+          "employees": [
+            {
+              "name": "Hawk Six",
+              "email": "hawk.6@payhawk.com"
+            },
+            {
+              "name": "Hawk Seven",
+              "email": "hawk.7@payhawk.com"
+            }
+          ]
+        },
+        {
+          "name": "Hawk Five",
+          "email": "hawk.5@payhawk.com"
+        }
+      ]
+    },
+    {
+      "name": "Hawk Two",
+      "email": "hawk.2@payhawk.com",
+      "employees": [
+        {
+          "name": "Hawk Eight",
+          "email": "hawk.8@payhawk.com"
+        }
+      ]
+    }
+  ]
+}

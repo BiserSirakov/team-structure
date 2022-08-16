@@ -1,13 +1,18 @@
 import request from 'supertest';
 import app from '../../src/app';
-import { getMember } from '../../src/services/member.service';
+import { getMember, getRoot } from '../../src/services/member.service';
 
 import { createMember } from './create.member.test';
 
-describe('DELETE /members', () => {
+describe('DELETE /api/members/{memberId}', () => {
   it('should successfully delete the root', async () => {
-    const res1 = await createMember('Pay Root', 'pay.root@payhawk.com');
-    const res = await request(app).delete(`/api/members/${res1.body.id}`);
+    let rootId = getRoot()?.id;
+    if (!rootId) {
+      const res1 = await createMember('Pay Root', 'pay.root@payhawk.com');
+      rootId = res1.body.id;
+    }
+
+    const res = await request(app).delete(`/api/members/${rootId}`);
     expect(res.statusCode).toEqual(204);
   });
 
