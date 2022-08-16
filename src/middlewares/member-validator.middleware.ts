@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { make } from 'simple-body-validator';
-
+import { Member } from '../models/member.model';
 import { isEmailUsed } from '../services/member.service';
 
 /**
@@ -11,12 +10,7 @@ import { isEmailUsed } from '../services/member.service';
  * @returns 400 (Bad Request) with error message(s) if the request does not meet the validation rules.
  */
 export default function validateMember(req: Request, res: Response, next: NextFunction) {
-  const rules = {
-    name: 'required|string',
-    email: 'required|email',
-  };
-
-  const validator = make(req.body, rules);
+  const validator = Member.getValidator(req.body.name, req.body.email);
   if (!validator.validate()) {
     return res.status(400).send(validator.errors().all());
   }

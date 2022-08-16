@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import { make } from 'simple-body-validator';
 
 /**
  * Represents a member of the team. A member can be a manager/employee.
@@ -85,5 +86,20 @@ export class Member {
     });
 
     this._manager = undefined; // TODO: Check the garbage collector in NodeJS (if the current object gets deleted)
+  }
+
+  /**
+   * Gets a validator with predefined rules.
+   * @param name A name, to be validated.
+   * @param email An email, to be validated.
+   * @returns A validator object
+   */
+  static getValidator(name: string, email: string) {
+    const rules = {
+      name: 'required|string',
+      email: 'required|email',
+    };
+
+    return make({ name, email }, rules);
   }
 }
