@@ -45,6 +45,8 @@ A reasonable test coverage with jest and supertest.
 
 -> insert image here <--
 
+There are probably some edge cases that can be polished, but the deadline is quite short.
+
 run 'npm test'
 
 <img width="867" alt="image" src="https://user-images.githubusercontent.com/9366962/184987597-ffc757bd-330a-49dc-8d64-f782f42cb19f.png">
@@ -53,3 +55,9 @@ Angular client app
 
 cd client
 npm start
+
+Learnings from the past 3 days:
+
+1. ...
+2. ...
+3. ...

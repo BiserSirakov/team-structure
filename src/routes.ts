@@ -7,10 +7,11 @@ import {
   updateMemberHandler,
   deleteMemberHandler,
   getMembersHandler,
+  demoteManagerHandler,
 } from './controllers/members.controller';
 import { exportTeamHandler, importTeamHandler } from './controllers/team.controller';
 
-import fileUpload from "./middlewares/file-upload.middleware";
+import fileUpload from './middlewares/file-upload.middleware';
 
 export default function routes(app: Express) {
   /**
@@ -29,6 +30,11 @@ export default function routes(app: Express) {
   app.delete('/api/members/:memberId', deleteMemberHandler);
 
   /**
+   * Demote a manager
+   */
+  app.put('/api/members/:memberId/demote', demoteManagerHandler);
+
+  /**
    * Get members (as an array) for a given set of filters.
    */
   app.get('/api/members', getMembersHandler);
@@ -42,6 +48,9 @@ export default function routes(app: Express) {
    * Gets a team (exports a json file)
    */
   app.get('/api/team', exportTeamHandler);
+
+  // TODO: Rebalance the team structure by a given balance index
+  // app.put('/api/team', rebalanceTeam);
 
   // Custom error handler (should be registered at the end)
   app.use(errorHandler);

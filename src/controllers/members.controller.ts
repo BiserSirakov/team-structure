@@ -6,6 +6,7 @@ import {
   getMembers,
   GetMembersQuery,
   updateManager,
+  demoteManager,
 } from '../services/member.service';
 import { mapMemberToOutput } from '../services/member.mapper.service';
 
@@ -39,6 +40,15 @@ export function deleteMemberHandler(req: Request, res: Response, next: NextFunct
   try {
     deleteMember(req.params.memberId);
     return res.sendStatus(204);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export function demoteManagerHandler(req: Request, res: Response, next: NextFunction) {
+  try {
+    const demotedManager = demoteManager(req.params.memberId, req.body.managerId);
+    return res.json(mapMemberToOutput(demotedManager));
   } catch (error) {
     next(error);
   }

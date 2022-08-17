@@ -78,6 +78,20 @@ export function checkEmails(member: Member): boolean {
   return true;
 }
 
+export function demoteManager(memberId: string, managerId: string): Member {
+  const member = getMember(memberId);
+  if (member === root) {
+    throw new Error('The top manager cannot be demoted.');
+  }
+
+  const newManager = getMember(managerId);
+
+  member.delete();
+  member.updateManager(newManager);
+
+  return member;
+}
+
 export function updateManager(memberId: string, managerId: string): Member {
   const member = getMember(memberId);
   const newManager = getMember(managerId);
@@ -157,7 +171,7 @@ export function getMembers(query: GetMembersQuery): Member[] {
  * @param callback Predicate, to be applied on every member.
  * @returns The first member that evaluates the predicate to true. Otherwise - undefined.
  */
-function find(callback: (member: Member) => boolean): Member | undefined {
+export function find(callback: (member: Member) => boolean): Member | undefined {
   // start the search from the root
   const stack = [root];
 
