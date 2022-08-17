@@ -51,7 +51,7 @@ export function setRoot(newRoot: Member): void {
 }
 
 /**
- * (Dirty solution) // TODO:
+ * (Dirty solution) // TODO: reuse the traverse function (having troubles with the callbacks)
  * Checks for duplicate emails in the given team structure
  * @param member the member where the search is started from
  */
@@ -153,23 +153,23 @@ export function getMembers(query: GetMembersQuery): Member[] {
 
 /**
  * Finds the first member where the predicate is true.
- * Iterative Depth-First Search using stack.
- * @param f Predicate, to be applied on every member.
+ * Iterative Depth-First Search (using stack)
+ * @param callback Predicate, to be applied on every member.
  * @returns The first member that evaluates the predicate to true. Otherwise - undefined.
  */
-function find(f: (member: Member) => boolean): Member | undefined {
+function find(callback: (member: Member) => boolean): Member | undefined {
   // start the search from the root
   const stack = [root];
 
+  // TODO: reuse the traverse function (having troubles with the callbacks)
   while (stack.length) {
     const current = stack.pop();
-    if (!current) break; // ts
 
-    if (f(current)) {
+    if (current && callback(current)) {
       return current;
     }
 
-    current.employees.forEach((employee) => {
+    current?.employees.forEach((employee) => {
       stack.push(employee);
     });
   }
@@ -179,28 +179,41 @@ function find(f: (member: Member) => boolean): Member | undefined {
 
 /**
  * Filters the members where the predicate is true.
- * Iterative Depth-First Search using stack.
- * @param f Predicate, to be applied on every member.
+ * @param callback To be applied on every member.
  * @returns An array of members.
  */
-function filter(f: (member: Member) => boolean): Member[] {
+function filter(callback: (member: Member) => boolean): Member[] {
   const result: Member[] = [];
 
+  traverse((member) => {
+    if (callback(member)) {
+      result.push(member);
+    }
+
+    return true;
+  });
+
+  return result;
+}
+
+/**
+ * Traverses the team structure from the root.
+ * Iterative Depth-First Search (using stack)
+ * @param callback To be executed for every member in the team structure
+ */
+function traverse(callback: (member: Member) => void): void {
   // start the search from the root
   const stack = [root];
 
   while (stack.length) {
     const current = stack.pop();
-    if (!current) break; // ts
 
-    if (f(current)) {
-      result.push(current);
+    if (current) {
+      callback(current);
     }
 
-    current.employees.forEach((employee) => {
+    current?.employees.forEach((employee) => {
       stack.push(employee);
     });
   }
-
-  return result;
 }
