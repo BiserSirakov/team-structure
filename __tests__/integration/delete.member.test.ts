@@ -14,6 +14,9 @@ describe('DELETE /api/members/{memberId}', () => {
 
     const res = await request(app).delete(`/api/members/${rootId}`);
     expect(res.statusCode).toEqual(204);
+
+    const root = getRoot();
+    expect(root).toBeNull();
   });
 
   /**
