@@ -37,6 +37,10 @@ export class Member {
    * @param employee New employee
    */
   addEmployee(employee: Member): void {
+    if (employee === this) {
+      throw new Error('A member cannot have itslef as an employee.');
+    }
+
     employee._manager = this;
     this.employees.add(employee);
   }
