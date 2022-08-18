@@ -137,4 +137,6 @@ PUT http://localhost:1010/api/team
 
 For testing are used [jest](https://jestjs.io/) and [supertest](https://www.npmjs.com/package/supertest).
 
--> insert image here <--
+TODO: Cover more cases, improve the code coverage.
+
+<img width="641" alt="image" src="https://user-images.githubusercontent.com/9366962/185421419-4caac74d-6992-4174-aa59-7ae78dba4daa.png">
