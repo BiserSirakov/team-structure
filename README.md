@@ -1,63 +1,143 @@
 # Team Structure as a Service
 
-To start the service, run 'npm start'. The default localhost is 1010.
+## How to run the backend service
 
-To create a member...
+1. Install the dependencies: run `npm install` in the root directory
+2. Run the backend service: run `npm start`. The service should be available at http://localhost:1010/
 
-To update a member...
+## How to run the client web app
 
-To delete a member...
+1. Open a new terminal and go to 'client' directory: `cd client`
+2. Install the dependencies: run `npm install`
+3. Run the client app: `npm start`. Open http://localhost:4200/ in the browser.
 
-To get members...
+## How to run the tests
 
-To export ...
+1. Install the dependencies (if not installed already): run `npm install` in the root directory
+2. Run `npm test`
 
-To import ... \*for simplicity, the app stores the file in memory as a Buffer object.
+## Client web application
 
-WARNING: Uploading very large files, or relatively small files in large numbers very quickly, can cause your application to run out of memory when memory storage is used.
+A simple Angular web app with a single page.
 
-Probably, think of storing the file temporarly first, and then parse it?
-
-const storage = multer.memoryStorage()
-const upload = multer({ storage: storage })
-
-limits
-An object specifying the size limits of the following optional properties. Multer passes this object into busboy directly, and the details of the properties can be found on busboy's page.
-
-The following integer values are available:
-
-Key Description Default
-fieldNameSize Max field name size 100 bytes
-fieldSize Max field value size (in bytes) 1MB
-fields Max number of non-file fields Infinity
-fileSize For multipart forms, the max file size (in bytes) Infinity
-files For multipart forms, the max number of file fields Infinity
-parts For multipart forms, the max number of parts (fields + files) Infinity
-headerPairs For multipart forms, the max number of header key=>value pairs to parse 2000
-
-Specifying the limits can help protect your site against denial of service (DoS) attacks.
-
-For simplicity, the service works with a single team.
-
-The member.service.ts represents our tree structure.
-
-A reasonable test coverage with jest and supertest.
-
--> insert image here <--
-
-There are probably some edge cases that can be polished, but the deadline is quite short.
-
-run 'npm test'
+Fetches the current team structure and displays it.
 
 <img width="867" alt="image" src="https://user-images.githubusercontent.com/9366962/184987597-ffc757bd-330a-49dc-8d64-f782f42cb19f.png">
 
-Angular client app
+## Backend API service
 
-cd client
-npm start
+### Create a new member
 
-Learnings from the past 3 days:
+POST http://localhost:1010/api/members
 
-1. ...
-2. ...
-3. ...
+```json
+{
+  "name": "John Doe",
+  "email": "john.doe@payhawk.com"
+}
+```
+
+When created successfully, a 201 (Created) HTTP response should be returned:
+
+```json
+{
+  "id": "1eb4f3dc-ec6a-4d8e-9d42-4afb9bcd889d",
+  "name": "John Doe",
+  "email": "john.doe@payhawk.com"
+}
+```
+
+If no "managerId" passed - create as the team's top manager. If there is already a top manager, create as a direct report to the top manager
+
+Creating a new member under a specific manager:
+
+```json
+{
+  "name": "John Doe Two",
+  "email": "john.doe2@payhawk.com",
+  "managerId": "1eb4f3dc-ec6a-4d8e-9d42-4afb9bcd889d"
+}
+```
+
+### Update a member
+
+The manager of a member can be updated:
+
+PUT http://localhost:1010/api/members/{memberId}
+
+```json
+{
+  "managerId": "1eb4f3dc-ec6a-4d8e-9d42-4afb9bcd889d"
+}
+```
+
+### Delete a member
+
+A member can be deleted. If the member has employees, they are transferred to his manager.
+
+DELETE http://localhost:1010/api/members/{memberId}
+
+### Demote a member (delete + update)
+
+A member can be demoted. If the member has employees, they are transferred to his manager. The member is moved to be under a given manager.
+
+PUT http://localhost:1010/api/members/{memberId}/demote
+
+```json
+{
+  "managerId": "1eb4f3dc-ec6a-4d8e-9d42-4afb9bcd889d"
+}
+```
+
+### Import a team structure
+
+A JSON file can be uploaded to set the current team structure. The current one gets replaced.
+
+POST http://localhost:1010/api/team
+
+form-data:
+
+key: 'team'
+value: 'a json file'
+
+Its important that the key is 'team'
+
+### Export the team structure
+
+The team can be downloaded as a json file.
+
+From the browser:
+
+GET http://localhost:1010/api/team
+
+### Get members by filters
+
+The members can be filtered by name, email, managerEmail, and employeeEmail.
+
+All filters are inclusive and case insensitive.
+
+GET http://localhost:1010/api/members
+
+GET http://localhost:1010/api/members?name=john&email=one
+
+GET http://localhost:1010/api/members?managerEmail=doe&email=test@company.com
+
+GET http://localhost:1010/api/members?employeeEmail=john&email=test@company.com
+
+### Rebalance the team structure
+
+The team structure can be rebalanced by a given balance index.
+
+PUT http://localhost:1010/api/team
+
+```json
+{
+  "balanceIndex": 2
+}
+```
+
+### Testing
+
+For testing are used [jest](https://jestjs.io/) and [supertest](https://www.npmjs.com/package/supertest).
+
+-> insert image here <--
