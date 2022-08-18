@@ -95,12 +95,9 @@ A JSON file can be uploaded to set the current team structure. The current one g
 
 POST http://localhost:1010/api/team
 
-form-data:
+Its important that the form data key is 'team' when uploading the json file.
 
-key: 'team'
-value: 'a json file'
-
-Its important that the key is 'team'
+Checkout the example json files in `__tests__/files`.
 
 ### Export the team structure
 
