@@ -82,12 +82,14 @@ export class Member {
   /**
    * Deletes the current memeber. If the member has employees, they are transferred to the member's manager.
    */
-  delete(): void {
+  delete(transferEmployees: boolean = true): void {
     this.manager?.removeEmployee(this);
 
-    this.employees.forEach((employee) => {
-      employee.updateManager(this.manager);
-    });
+    if (transferEmployees) {
+      this.employees.forEach((employee) => {
+        employee.updateManager(this.manager);
+      });
+    }
 
     this._manager = undefined; // TODO: Check the garbage collector in NodeJS (if the current object gets deleted)
   }

@@ -22,6 +22,8 @@ export function importTeamHandler(req: Request, res: Response) {
       throw new IncorrectTeamStructureError({ email: ['There are duplicate emails.'] });
     }
 
+    // TODO: set the used emails from the import to the tree's emails set
+
     setRoot(importedRoot);
 
     return res.json(mapMemberToOutput(importedRoot));

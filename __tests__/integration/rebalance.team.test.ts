@@ -5,7 +5,7 @@ import { importTeam } from './import.team.test';
 
 describe('PUT /api/team', () => {
   /**
-   * Rebalance with index = 2.
+   * Rebalance with index = 1.
    *
    *                         0
    *        0                |
