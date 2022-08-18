@@ -97,22 +97,17 @@ export function rebalanceTeam(balanceIndex: number): Member {
     throw new Error('The balance index must be equal or greater than 1!');
   }
 
-  // Time (n*2)
   traverse((member) => {
     // if the current member's manager employees are more than balanceIndex
     // get the extra siblings of the current memeber and move them under him
     if (member.manager && member.manager?.employees.size > balanceIndex) {
-      const extraSiblings = Array.from(member.manager.employees)
-        // .filter((m) => m !== member)
-        .slice(balanceIndex);
-
+      const extraSiblings = Array.from(member.manager.employees).slice(balanceIndex);
       extraSiblings.forEach((s) => s.delete(false));
 
+      // for each sibling (my manager's employees, including myself)
       // if sibling.employees.size > X -> skip
       // if sibling.employees.size = X -> skip
       // if sibling.employees.size < X -> add the deleted members (until sibling.employees.size = x). If there are still remaining deleted members -> continue on next sibling. If no more siblings - add all remaining deleted members to the current sibling.
-
-      // for each sibling (my manager's employees, including myself)
       member.manager.employees.forEach((sibling) => {
         if (sibling.employees.size < balanceIndex && extraSiblings.length) {
           while (sibling.employees.size < balanceIndex && extraSiblings.length) {
@@ -137,14 +132,13 @@ export function rebalanceTeam(balanceIndex: number): Member {
       }
     }
 
-    // we use two loops to avoid the members jumping 2 or more levels up/down
-
     // if the current member's manager employees are less than balanceIndex
     // move people from 2 levels below 1 level up
     if (member.manager && member.manager?.employees.size < balanceIndex) {
       let numberOfMembersToPromote = balanceIndex - member.manager.employees.size;
-      // for each sibling (my manager's employees, including myself) dokato numberOfMembersToPromote
-      // sibling.employee.updatemanager(member.manager)
+
+      // two nested loops are used to avoid the members jumping 2 or more levels up/down
+      // for each sibling (my manager's employees, including myself)
       const siblings = Array.from(member.manager.employees);
       for (let i = 0; i < siblings.length && numberOfMembersToPromote; i++) {
         const sibling = siblings[i];
@@ -155,24 +149,10 @@ export function rebalanceTeam(balanceIndex: number): Member {
           numberOfMembersToPromote--;
         }
       }
-
-      // no recursion here as one of the points in the assignment is stating:
-      // 'Members don’t like moving too much in the hierarchy, they prefer to move 1 level up/down instead of making a jump of 2 levels'
-
-      // move numberOfMembersToPromote number of my employees (or my siblings' employees) to my manager
-      // const siblings = Array.from(member.manager.employees);
-      // for (let i = 0; i < siblings.length && numberOfMembersToPromote; i++) {
-      //   const sibling = siblings[i];
-      //   const siblingEmployees = Array.from(sibling.employees);
-      //   for (let j = 0; j < siblingEmployees.length && numberOfMembersToPromote; j++) {
-      //     const siblingEmployee = siblingEmployees[j];
-      //     siblingEmployee.updateManager(member.manager);
-      //     numberOfMembersToPromote--;
-      //   }
-      // }
     }
   });
 
+  // return the updated tree structure (the root)
   return root;
 }
 
