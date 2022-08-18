@@ -80,7 +80,8 @@ export class Member {
   }
 
   /**
-   * Deletes the current memeber. If the member has employees, they are transferred to the member's manager.
+   * Deletes the current memeber.
+   * @param transferEmployees If the member has employees, they are transferred to the member's manager.
    */
   delete(transferEmployees: boolean = true): void {
     this.manager?.removeEmployee(this);

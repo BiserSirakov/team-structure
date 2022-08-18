@@ -12,10 +12,16 @@ let root: Member | null;
  */
 const emails = new Set<string>();
 
+/**
+ * Creates a member.
+ * @param name Name of the member
+ * @param email Email of the member
+ * @param managerId Manager Id, optional
+ * @returns The newly created member
+ */
 export function createMember(name: string, email: string, managerId?: string): Member {
   const member = new Member(name, email);
 
-  // If there is a manager with the given id -> add the current member to its employess, otherwise throw an error.
   if (managerId) {
     const manager = getMember(managerId);
     manager.addEmployee(member);
@@ -37,21 +43,32 @@ export function createMember(name: string, email: string, managerId?: string): M
   return member;
 }
 
+/**
+ * Checks if the given email has already been used
+ * @param email Email to be checked
+ */
 export function isEmailUsed(email: string): boolean {
   return emails.has(email);
 }
 
+/**
+ * Gets the root of the team structure
+ * @returns The top manager (if there is one)
+ */
 export function getRoot(): Member | null {
   return root;
 }
 
+/**
+ * Sets the top manager of the team structure
+ * @param newRoot New root
+ */
 export function setRoot(newRoot: Member): void {
   root = newRoot;
-  // TODO: check if the old object is disposed?
 }
 
 /**
- * (Dirty solution) // TODO: reuse the traverse function (having troubles with the callbacks)
+ * (Dirty solution, used only during import) // TODO: reuse the traverse function (having troubles with the callbacks)
  * Checks for duplicate emails in the given team structure
  * @param member the member where the search is started from
  */
@@ -158,6 +175,12 @@ export function rebalanceTeam(balanceIndex: number): Member {
   return root;
 }
 
+/**
+ * Demotes a member. Demote = Delete + Update manager. The member's employees are transferred to his manager, then the member is transferred to the new manager.
+ * @param memberId Member to be demoted
+ * @param managerId New manager
+ * @returns The updated member
+ */
 export function demoteManager(memberId: string, managerId: string): Member {
   const member = getMember(memberId);
   if (member === root) {
@@ -172,6 +195,12 @@ export function demoteManager(memberId: string, managerId: string): Member {
   return member;
 }
 
+/**
+ * Updates the member's manager.
+ * @param memberId Member to be updated
+ * @param managerId New manager
+ * @returns The updated member
+ */
 export function updateManager(memberId: string, managerId: string): Member {
   const member = getMember(memberId);
   const newManager = getMember(managerId);
@@ -180,6 +209,10 @@ export function updateManager(memberId: string, managerId: string): Member {
   return member;
 }
 
+/**
+ * Deltes a member.
+ * @param memberId Member to be deleted
+ */
 export function deleteMember(memberId: string): void {
   const member = getMember(memberId);
   member.delete();
@@ -191,6 +224,12 @@ export function deleteMember(memberId: string): void {
   }
 }
 
+/**
+ * Gets a member by a given id
+ * @param memberId Member Id
+ * @returns The member with the given id
+ * @throws MemberNotFoundError in case no member was found
+ */
 export function getMember(memberId: string): Member {
   const member = find((m) => m.id === memberId);
   if (!member) {
@@ -200,12 +239,18 @@ export function getMember(memberId: string): Member {
   return member;
 }
 
+/**
+ * Specific error definition thrown if a member was not found.
+ */
 export class MemberNotFoundError extends Error {
   constructor(memberId: string) {
     super(`No member found with id '${memberId}'!`);
   }
 }
 
+/**
+ * Available filters
+ */
 export interface GetMembersQuery {
   name?: string;
   email?: string;
@@ -213,6 +258,11 @@ export interface GetMembersQuery {
   employeeEmail?: string;
 }
 
+/**
+ * Filters the current team structure and returns a collection of members.
+ * @param query A set of filters
+ * @returns An array of members
+ */
 export function getMembers(query: GetMembersQuery): Member[] {
   const result = filter((m) => {
     let expression = true;
@@ -309,25 +359,3 @@ function traverse(callback: (member: Member) => void): void {
     });
   }
 }
-
-// /**
-//  * Traverses the team structure from the root.
-//  * Iterative Depth-First Search (using stack)
-//  * @param callback To be executed for every member in the team structure
-//  */
-// function traverse_dfs(callback: (member: Member) => void): void {
-//   // start the search from the root
-//   const stack = [root];
-
-//   while (stack.length) {
-//     const current = stack.pop();
-
-//     if (current) {
-//       callback(current);
-//     }
-
-//     current?.employees.forEach((employee) => {
-//       stack.push(employee);
-//     });
-//   }
-// }

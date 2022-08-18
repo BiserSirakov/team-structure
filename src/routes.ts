@@ -2,6 +2,8 @@ import { Express } from 'express';
 
 import validateMember from './middlewares/member-validator.middleware';
 import errorHandler from './middlewares/error-handler.middleware';
+import fileUpload from './middlewares/file-upload.middleware';
+
 import {
   createMemberHandler,
   updateMemberHandler,
@@ -14,8 +16,6 @@ import {
   importTeamHandler,
   rebalanceTeamHandler,
 } from './controllers/team.controller';
-
-import fileUpload from './middlewares/file-upload.middleware';
 
 export default function routes(app: Express) {
   /**
