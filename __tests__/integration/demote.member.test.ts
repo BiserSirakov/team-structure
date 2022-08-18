@@ -61,6 +61,7 @@ describe('PUT /api/members/{memberId}/demote', () => {
     expect(root?.employees.has(five!)).toBe(true);
   });
 
+  // TODO:
   it('should return 404 (Not Found) when trying to demote a member that does not exist', async () => {});
   it('should return 404 (Not Found) when trying to demote a member under a manager that does not exist', async () => {});
 });

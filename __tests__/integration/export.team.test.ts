@@ -1,6 +1,5 @@
 import request from 'supertest';
 import app from '../../src/app';
-import { getRoot } from '../../src/services/member.service';
 import { importTeam } from './import.team.test';
 
 describe('GET /api/team', () => {

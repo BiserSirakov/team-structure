@@ -98,17 +98,19 @@ export function rebalanceTeam(balanceIndex: number): Member {
   }
 
   traverse((member) => {
+    const currentManager = member.manager;
+
     // if the current member's manager employees are more than balanceIndex
     // get the extra siblings of the current memeber and move them under him
-    if (member.manager && member.manager?.employees.size > balanceIndex) {
-      const extraSiblings = Array.from(member.manager.employees).slice(balanceIndex);
+    if (currentManager && currentManager?.employees.size > balanceIndex) {
+      const extraSiblings = Array.from(currentManager.employees).slice(balanceIndex);
       extraSiblings.forEach((s) => s.delete(false));
 
       // for each sibling (my manager's employees, including myself)
       // if sibling.employees.size > X -> skip
       // if sibling.employees.size = X -> skip
       // if sibling.employees.size < X -> add the deleted members (until sibling.employees.size = x). If there are still remaining deleted members -> continue on next sibling. If no more siblings - add all remaining deleted members to the current sibling.
-      member.manager.employees.forEach((sibling) => {
+      currentManager.employees.forEach((sibling) => {
         if (sibling.employees.size < balanceIndex && extraSiblings.length) {
           while (sibling.employees.size < balanceIndex && extraSiblings.length) {
             const extraSibling = extraSiblings.pop();
@@ -121,7 +123,7 @@ export function rebalanceTeam(balanceIndex: number): Member {
 
       // if there are remaining extraSiblings -> add them to the last sibling
       if (extraSiblings.length) {
-        const siblings = Array.from(member.manager.employees);
+        const siblings = Array.from(currentManager.employees);
         const lastSibling = siblings[siblings.length - 1];
         while (extraSiblings.length) {
           const extraSibling = extraSiblings.pop();
@@ -134,18 +136,18 @@ export function rebalanceTeam(balanceIndex: number): Member {
 
     // if the current member's manager employees are less than balanceIndex
     // move people from 2 levels below 1 level up
-    if (member.manager && member.manager?.employees.size < balanceIndex) {
-      let numberOfMembersToPromote = balanceIndex - member.manager.employees.size;
+    if (currentManager && currentManager?.employees.size < balanceIndex) {
+      let numberOfMembersToPromote = balanceIndex - currentManager.employees.size;
 
       // two nested loops are used to avoid the members jumping 2 or more levels up/down
       // for each sibling (my manager's employees, including myself)
-      const siblings = Array.from(member.manager.employees);
+      const siblings = Array.from(currentManager.employees);
       for (let i = 0; i < siblings.length && numberOfMembersToPromote; i++) {
         const sibling = siblings[i];
         const siblingEmployees = Array.from(sibling.employees);
         for (let j = 0; j < siblingEmployees.length && numberOfMembersToPromote; j++) {
           const siblingEmployee = siblingEmployees[j];
-          siblingEmployee.updateManager(member.manager);
+          siblingEmployee.updateManager(currentManager);
           numberOfMembersToPromote--;
         }
       }

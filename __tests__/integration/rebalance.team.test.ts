@@ -3,6 +3,7 @@ import app from '../../src/app';
 import { getRoot } from '../../src/services/member.service';
 import { importTeam } from './import.team.test';
 
+// TODO:
 describe('PUT /api/team', () => {
   /**
    * Rebalance with index = 1.
@@ -35,13 +36,13 @@ describe('PUT /api/team', () => {
   /**
    * Rebalance with index = 3.
    *
-   *          0                 0
-   *       / | | \            / |  \
-   *      /  | |  \     =>   1  2   3
-   *     1   2 3   4        /|\  \  |\
-   *    /|\  | |\   \      5 6 4  8 9 10
-   *   5 6 7 8 9 10 11         /\
-   *                          11 7
+   *          0                     0
+   *       / | | \              /   |   \
+   *      /  | |  \     =>     /    |    \
+   *     1   2 3   4          1     2     3
+   *    /|\  | |\   \        /|\   /|\   / \
+   *   5 6 7 8 9 10 11      5 6 7 8 4 11 9 10
+   *
    */
   it('should successfully rebalance the team structure by a given balance index = 3', async () => {});
 

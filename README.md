@@ -18,7 +18,7 @@
 
 ## Client web application
 
-A simple Angular web app with a single page.
+A simple Angular web app with a single component.
 
 Fetches the current team structure and displays it.
 
