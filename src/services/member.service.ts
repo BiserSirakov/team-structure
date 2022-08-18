@@ -78,6 +78,61 @@ export function checkEmails(member: Member): boolean {
   return true;
 }
 
+/**
+ * TODO: thats initial/dirty solution.
+ * - Check how to optimize.
+ * - Check if the tree should be traversed multiple times until the balance check is satisfied.
+ * - Check if the hierarchy level / height can be utilized in this algorithm
+ *
+ * v0.1 Rebalances the team by a given balance index
+ * @param balanceIndex Number of employees that every manager should have
+ * @returns The root of the new rebalanced team
+ */
+export function rebalanceTeam(balanceIndex: number): Member {
+  if (!root) {
+    throw new Error('The team structure is empty.');
+  }
+
+  if (balanceIndex < 1) {
+    throw new Error('The balance index must be equal or greater than 1!');
+  }
+
+  traverse((member) => {
+    // if the current member's manager employees are more than balanceIndex
+    // get the extra siblings of the current memeber and move them under him
+    if (member.manager && member.manager?.employees.size > balanceIndex) {
+      const extraSiblings = Array.from(member.manager.employees)
+        .filter((m) => m !== member)
+        .slice(balanceIndex - 1);
+
+      extraSiblings.forEach((s) => s.updateManager(member));
+    }
+
+    // if the current member's manager employees are less than balanceIndex
+    // move people from 2 levels below 1 level up
+    if (member.manager && member.manager?.employees.size < balanceIndex) {
+      let numberOfMembersToPromote = balanceIndex - member.manager.employees.size;
+
+      // no recursion here as one of the points in the assignment is stating:
+      // 'Members don’t like moving too much in the hierarchy, they prefer to move 1 level up/down instead of making a jump of 2 levels'
+
+      // move numberOfMembersToPromote number of my employees (or my siblings' employees) to my manager
+      const siblings = Array.from(member.manager.employees);
+      for (let i = 0; i < siblings.length && numberOfMembersToPromote; i++) {
+        const sibling = siblings[i];
+        const siblingEmployees = Array.from(sibling.employees);
+        for (let j = 0; j < siblingEmployees.length && numberOfMembersToPromote; j++) {
+          const siblingEmployee = siblingEmployees[j];
+          siblingEmployee.updateManager(member.manager);
+          numberOfMembersToPromote--;
+        }
+      }
+    }
+  });
+
+  return root;
+}
+
 export function demoteManager(memberId: string, managerId: string): Member {
   const member = getMember(memberId);
   if (member === root) {
@@ -212,22 +267,44 @@ function filter(callback: (member: Member) => boolean): Member[] {
 
 /**
  * Traverses the team structure from the root.
- * Iterative Depth-First Search (using stack)
+ * Iterative Breadth-First Search (using queue)
  * @param callback To be executed for every member in the team structure
  */
 function traverse(callback: (member: Member) => void): void {
   // start the search from the root
-  const stack = [root];
+  const queue = [root];
 
-  while (stack.length) {
-    const current = stack.pop();
+  while (queue.length) {
+    const current = queue.shift();
 
     if (current) {
       callback(current);
     }
 
     current?.employees.forEach((employee) => {
-      stack.push(employee);
+      queue.push(employee);
     });
   }
 }
+
+// /**
+//  * Traverses the team structure from the root.
+//  * Iterative Depth-First Search (using stack)
+//  * @param callback To be executed for every member in the team structure
+//  */
+// function traverse_dfs(callback: (member: Member) => void): void {
+//   // start the search from the root
+//   const stack = [root];
+
+//   while (stack.length) {
+//     const current = stack.pop();
+
+//     if (current) {
+//       callback(current);
+//     }
+
+//     current?.employees.forEach((employee) => {
+//       stack.push(employee);
+//     });
+//   }
+// }

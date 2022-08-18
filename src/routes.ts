@@ -9,7 +9,11 @@ import {
   getMembersHandler,
   demoteManagerHandler,
 } from './controllers/members.controller';
-import { exportTeamHandler, importTeamHandler } from './controllers/team.controller';
+import {
+  exportTeamHandler,
+  importTeamHandler,
+  rebalanceTeamHandler,
+} from './controllers/team.controller';
 
 import fileUpload from './middlewares/file-upload.middleware';
 
@@ -49,8 +53,10 @@ export default function routes(app: Express) {
    */
   app.get('/api/team', exportTeamHandler);
 
-  // TODO: Rebalance the team structure by a given balance index
-  // app.put('/api/team', rebalanceTeam);
+  /**
+   * Rebalances the team structure by a given balance index
+   */
+  app.put('/api/team', rebalanceTeamHandler);
 
   // Custom error handler (should be registered at the end)
   app.use(errorHandler);

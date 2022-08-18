@@ -4,7 +4,7 @@ import { getMember } from '../../src/services/member.service';
 
 import { createMember } from './create.member.test';
 
-describe('PUT /api/members', () => {
+describe('PUT /api/members/{memberId}', () => {
   /**
    * Update Two' manager to be Three.
    *

@@ -1,11 +1,11 @@
-import { Request, Response, NextFunction, json } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { MemberOutput } from '../models/member.output.model';
 import {
   mapMemberToOutput,
   mapOutputToMember,
   IncorrectTeamStructureError,
 } from '../services/member.mapper.service';
-import { setRoot, checkEmails, getRoot } from '../services/member.service';
+import { setRoot, checkEmails, getRoot, rebalanceTeam } from '../services/member.service';
 
 export function importTeamHandler(req: Request, res: Response) {
   const bufStr = req.file?.buffer?.toString();
@@ -44,4 +44,13 @@ export function exportTeamHandler(req: Request, res: Response) {
   return res
     .setHeader('Content-disposition', 'attachment; filename=team-structure.json')
     .json(output);
+}
+
+export function rebalanceTeamHandler(req: Request, res: Response, next: NextFunction) {
+  try {
+    const rebalancedTeam = rebalanceTeam(req.body.balanceIndex);
+    return res.json(mapMemberToOutput(rebalancedTeam));
+  } catch (error) {
+    next(error);
+  }
 }

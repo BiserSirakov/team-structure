@@ -83,10 +83,10 @@ describe('POST /api/team', () => {
   });
 });
 
-export async function importTeam() {
+export async function importTeam(filename: string = 'correct.team.json') {
   const response = await request(app)
     .post('/api/team')
-    .attach('team', `__tests__/files/correct.team.json`);
+    .attach('team', `__tests__/files/${filename}`);
 
   expect(response.statusCode).toEqual(200);
 
@@ -96,7 +96,7 @@ export async function importTeam() {
   return response;
 }
 
-export async function importIncorrectTeam(filename: string = 'correct.team.json') {
+export async function importIncorrectTeam(filename: string) {
   const response = await request(app)
     .post('/api/team')
     .attach('team', `__tests__/files/${filename}`);
